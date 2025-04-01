@@ -1,4 +1,4 @@
-$env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyX"
+$env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
 $env:GeminiFallbackKeys = "AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
 
 function Invoke-GeminiAI {

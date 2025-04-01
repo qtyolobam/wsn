@@ -1,6 +1,7 @@
 $env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
 $env:GeminiFallbackKeys = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY,AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
 
+
 function Invoke-GeminiAI {
     param(
         [Parameter(Mandatory)]
@@ -42,12 +43,14 @@ SYSTEM INSTRUCTIONS:
         $Url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$Key"
 
         try {
-            $response = Invoke-RestMethod -Uri $Url -Method Post -Headers $Headers -Body $Body
-            return $response.candidates[0].content.parts[0].text
+            # Use Invoke-WebRequest for broader PowerShell compatibility
+            $response = Invoke-WebRequest -Uri $Url -Method Post -Headers $Headers -Body $Body -ContentType 'application/json'
+            $responseContent = $response.Content | ConvertFrom-Json
+            return $responseContent.candidates[0].content.parts[0].text
         }
         catch {
             # Optionally log the error for debugging
-            # Write-Host $_
+            Write-Host "Error with key $($Key): $($_.Exception.Message)"
         }
     }
 
@@ -67,11 +70,12 @@ try {
         Write-Host $response
         Write-Host "-------------------"
         Write-Host "Press Enter to exit..."
-        Read-Host | Out-Null
+        [void](Read-Host) # Use [void] to suppress output
     }
 }
 catch {
     Write-Error "An error occurred: $_"
     Write-Host "Press Enter to exit..."
-    Read-Host | Out-Null
+    [void](Read-Host) # Use [void] to suppress output
 }
+

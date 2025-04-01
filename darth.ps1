@@ -1,5 +1,5 @@
 $env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
-$env:GeminiFallbackKeys = "AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
+$env:GeminiFallbackKeys = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY,AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
 
 function Invoke-GeminiAI {
     param(
@@ -46,7 +46,6 @@ SYSTEM INSTRUCTIONS:
             return $response.candidates[0].content.parts[0].text
         }
         catch {
-            Write-Host "API key $($Key) failed. Trying next key..."
             # Optionally log the error for debugging
             # Write-Host $_
         }

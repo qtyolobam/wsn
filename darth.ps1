@@ -1,6 +1,7 @@
 $env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
 $env:GeminiFallbackKeys = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY,AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
 
+
 function Invoke-GeminiAI {
     param(
         [Parameter(Mandatory)]
@@ -81,9 +82,8 @@ try {
     if ($response) {
         Write-Host "`nResponse:"
         Write-Host "-------------------"
-       # Sanitize output to prevent misinterpretation
-        $response = $response -replace "[<]", "lt"  # Remove < 
-        $response = $response -replace "[>]", "gt"  # Remove >
+        # Sanitize output to prevent misinterpretation
+        $response = $response -replace "<", "&lt;" -replace ">", "&gt;"
         Write-Host $response
         Write-Host "-------------------"
         Write-Host "Press Enter to exit..."

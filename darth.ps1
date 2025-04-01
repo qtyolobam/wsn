@@ -1,7 +1,6 @@
 $env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
 $env:GeminiFallbackKeys = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY,AIzaSyDEjenKea_aBUuZARANwhtM2KqYuCbLdfs"
 
-
 function Invoke-GeminiAI {
     param(
         [Parameter(Mandatory)]
@@ -43,13 +42,28 @@ SYSTEM INSTRUCTIONS:
         $Url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$Key"
 
         try {
-            # Use Invoke-WebRequest for broader PowerShell compatibility
-            $response = Invoke-WebRequest -Uri $Url -Method Post -Headers $Headers -Body $Body -ContentType 'application/json'
+            $response = Invoke-WebRequest -Uri $Url -Method Post -Headers $Headers -Body $Body -ContentType 'application/json' -UseBasicParsing
+
+            # Check HTTP Status Code
+            if ($response.StatusCode -ge 400) {
+                Write-Warning "HTTP Error $($response.StatusCode) for key $($Key)"
+                # Try to get more details from the content, even if it's an error
+                if ($response.Content) {
+                    $errorContent = $response.Content | ConvertFrom-Json -ErrorAction SilentlyContinue
+                    if ($errorContent) {
+                         Write-Warning "Error details: $($errorContent | Out-String)"
+                    } else {
+                         Write-Warning "Raw error content: $($response.Content)"
+                    }
+                }
+                continue # Try the next key
+            }
+           
             $responseContent = $response.Content | ConvertFrom-Json
             return $responseContent.candidates[0].content.parts[0].text
+
         }
         catch {
-            # Optionally log the error for debugging
             Write-Host "Error with key $($Key): $($_.Exception.Message)"
         }
     }
@@ -67,15 +81,16 @@ try {
     if ($response) {
         Write-Host "`nResponse:"
         Write-Host "-------------------"
+       # Sanitize output to prevent misinterpretation
+        $response = $response -replace "[<>]", ""  # Remove < and >
         Write-Host $response
         Write-Host "-------------------"
         Write-Host "Press Enter to exit..."
-        [void](Read-Host) # Use [void] to suppress output
+        [void](Read-Host)
     }
 }
 catch {
     Write-Error "An error occurred: $_"
     Write-Host "Press Enter to exit..."
-    [void](Read-Host) # Use [void] to suppress output
+    [void](Read-Host)
 }
-

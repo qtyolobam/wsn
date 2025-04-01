@@ -82,7 +82,8 @@ try {
         Write-Host "`nResponse:"
         Write-Host "-------------------"
        # Sanitize output to prevent misinterpretation
-        $response = $response -replace "[<>]", ""  # Remove < and >
+        $response = $response -replace "[<]", "lt"  # Remove < 
+        $response = $response -replace "[>]", "gt"  # Remove >
         Write-Host $response
         Write-Host "-------------------"
         Write-Host "Press Enter to exit..."

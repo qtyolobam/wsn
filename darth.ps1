@@ -1,4 +1,4 @@
-$env:GeminiKey = ""
+$env:GeminiKey = "AIzaSyAjh7leDmMI4jdKuJzr85A_CX_OS7gSqyY"
 
 function Invoke-GeminiAI {
     param(
